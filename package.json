@@ -47,3 +47,8 @@
     "vite": "^8.0.12"
   }
 }
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "start": "npm run dev"
+}
