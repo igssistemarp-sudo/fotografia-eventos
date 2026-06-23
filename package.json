@@ -8,6 +8,7 @@
     "dev:api": "tsx watch server/index.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:api\"",
     "build": "tsc -b && vite build",
+    "start": "vite preview --host 0.0.0.0 --port $PORT",
     "lint": "eslint .",
     "preview": "vite preview",
     "prisma:generate": "prisma generate",
@@ -46,9 +47,4 @@
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"
   }
-}
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "start": "npm run dev"
 }
