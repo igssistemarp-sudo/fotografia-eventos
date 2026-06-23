@@ -1,0 +1,343 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Emitente {
+  id                 String   @id @default(cuid())
+  codigo             Int      @unique @default(autoincrement())
+  razaoSocial        String
+  nomeFantasia       String?
+  documento          String?  @unique
+  inscricaoEstadual  String?
+  inscricaoMunicipal String?
+  telefone           String?
+  whatsapp           String?
+  email              String?
+  site               String?
+  instagram          String?
+  cep                String?
+  endereco           String?
+  numero             String?
+  bairro             String?
+  cidade             String?
+  uf                 String?
+  complemento        String?
+  responsavelLegal   String?
+  cpfResponsavel     String?
+  emailFinanceiro    String?
+  logoPath           String?
+  observacoes        String?
+  ativo              Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Cliente {
+  id                     String          @id @default(cuid())
+  codigo                 Int             @unique @default(autoincrement())
+  tipo                   String
+  categoria              String?
+  nome                   String
+  apelido                String?
+  documento              String?         @unique
+  rgIe                   String?
+  nascimento             DateTime?
+  telefone               String?
+  whatsapp               String?
+  email                  String?
+  instagram              String?
+  cep                    String?
+  endereco               String?
+  profissao              String?
+  responsavelFinanceiro  String?
+  cpfResponsavel         String?
+  curso                  String?
+  turma                  String?
+  instituicao            String?
+  conclusao              String?
+  pacoteContratado       String?
+  quantidadeParcelas     Int?
+  valorPacote            Decimal?        @db.Decimal(12, 2)
+  situacaoFinanceira     String?
+  observacoes            String?
+  ativo                  Boolean         @default(true)
+  eventos                Evento[]
+  contratos              Contrato[]
+  contasReceber          ContaReceber[]
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+}
+
+model Fornecedor {
+  id                 String       @id @default(cuid())
+  codigo             Int          @unique @default(autoincrement())
+  tipoPessoa         String
+  nome               String
+  nomeFantasia       String?
+  documento          String?      @unique
+  rgIe               String?
+  telefone           String?
+  whatsapp           String?
+  email              String?
+  cep                String?
+  endereco           String?
+  categoria          String?
+  banco              String?
+  agencia            String?
+  conta              String?
+  pix                String?
+  condicaoPagamento  String?
+  observacoes        String?
+  ativo              Boolean      @default(true)
+  contasPagar        ContaPagar[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Profissional {
+  id                 String              @id @default(cuid())
+  codigo             Int                 @unique @default(autoincrement())
+  nome               String
+  apelido            String?
+  documento          String?             @unique
+  rgIe               String?
+  telefone           String?
+  whatsapp           String?
+  email              String?
+  tipo               String?
+  especialidade      String?
+  valorDiaria        Decimal?            @db.Decimal(12, 2)
+  valorHora          Decimal?            @db.Decimal(12, 2)
+  comissaoPercentual Decimal?            @db.Decimal(5, 2)
+  formaPagamento     String?
+  pix                String?
+  banco              String?
+  disponibilidade    String?
+  observacoes        String?
+  ativo              Boolean             @default(true)
+  eventos            EventoProfissional[]
+  contasPagar        ContaPagar[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model ProdutoServico {
+  id                        String   @id @default(cuid())
+  codigo                    Int      @unique @default(autoincrement())
+  tipo                      String
+  categoria                 String?
+  descricao                 String
+  unidade                   String?
+  custo                     Decimal? @db.Decimal(12, 2)
+  precoVenda                Decimal? @db.Decimal(12, 2)
+  margemLucro               Decimal? @db.Decimal(5, 2)
+  comissaoPadrao            Decimal? @db.Decimal(5, 2)
+  duracaoEstimada           String?
+  fotosInclusas             Int?
+  videosInclusos            Int?
+  profissionaisNecessarios  Int?
+  permiteParcelamento       Boolean  @default(false)
+  maximoParcelas            Int?
+  itensInclusos             String?
+  prazoEntrega              String?
+  albumIncluso              Boolean  @default(false)
+  sessaoPreEvento           Boolean  @default(false)
+  coberturaHoras            Int?
+  entradaMinima             Decimal? @db.Decimal(12, 2)
+  observacoes               String?
+  ativo                     Boolean  @default(true)
+  eventos                   EventoItem[]
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
+
+model Evento {
+  id                    String               @id @default(cuid())
+  codigo                Int                  @unique @default(autoincrement())
+  tipo                  String
+  titulo                String
+  clienteId             String
+  responsavelFinanceiro String?
+  dataEvento            DateTime
+  horaInicio            String?
+  horaFim               String?
+  local                 String?
+  cep                   String?
+  endereco              String?
+  status                String               @default("Proposta")
+  valorContratado       Decimal?             @db.Decimal(12, 2)
+  entrada               Decimal?             @db.Decimal(12, 2)
+  quantidadeParcelas    Int?
+  formaPagamento        String?
+  prazoEntrega          String?
+  checklist             Json?
+  observacoes           String?
+  cliente               Cliente              @relation(fields: [clienteId], references: [id])
+  profissionais         EventoProfissional[]
+  itens                 EventoItem[]
+  contratos             Contrato[]
+  contasReceber         ContaReceber[]
+  contasPagar           ContaPagar[]
+  caixa                 LivroCaixa[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+}
+
+model EventoProfissional {
+  id              String        @id @default(cuid())
+  eventoId        String
+  profissionalId  String
+  funcao          String?
+  horaInicio      String?
+  horaFim         String?
+  valorCombinado  Decimal?      @db.Decimal(12, 2)
+  statusPagamento String        @default("Pendente")
+  observacao      String?
+  evento          Evento        @relation(fields: [eventoId], references: [id])
+  profissional    Profissional  @relation(fields: [profissionalId], references: [id])
+}
+
+model EventoItem {
+  id               String          @id @default(cuid())
+  eventoId         String
+  produtoServicoId String
+  quantidade       Int             @default(1)
+  valorUnitario    Decimal?        @db.Decimal(12, 2)
+  evento           Evento          @relation(fields: [eventoId], references: [id])
+  produtoServico   ProdutoServico  @relation(fields: [produtoServicoId], references: [id])
+}
+
+model Contrato {
+  id              String          @id @default(cuid())
+  codigo          Int             @unique @default(autoincrement())
+  clienteId       String
+  eventoId        String
+  modelo          String
+  status          String          @default("Pendente")
+  valor           Decimal?        @db.Decimal(12, 2)
+  clausulas       String?
+  assinado        Boolean         @default(false)
+  arquivoPath     String?
+  cliente         Cliente         @relation(fields: [clienteId], references: [id])
+  evento          Evento          @relation(fields: [eventoId], references: [id])
+  contasReceber   ContaReceber[]
+  contasPagar     ContaPagar[]
+  caixa           LivroCaixa[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model ContaReceber {
+  id               String    @id @default(cuid())
+  codigo           Int       @unique @default(autoincrement())
+  clienteId        String
+  eventoId         String?
+  contratoId       String?
+  numeroParcela    Int?
+  totalParcelas    Int?
+  emissao          DateTime  @default(now())
+  vencimento       DateTime
+  recebimento      DateTime?
+  valorOriginal    Decimal   @db.Decimal(12, 2)
+  juros            Decimal?  @db.Decimal(12, 2)
+  multa            Decimal?  @db.Decimal(12, 2)
+  desconto         Decimal?  @db.Decimal(12, 2)
+  valorRecebido    Decimal?  @db.Decimal(12, 2)
+  formaPagamento   String?
+  status           String    @default("Aberto")
+  observacoes      String?
+  cliente          Cliente   @relation(fields: [clienteId], references: [id])
+  evento           Evento?   @relation(fields: [eventoId], references: [id])
+  contrato         Contrato? @relation(fields: [contratoId], references: [id])
+}
+
+model ContaPagar {
+  id                  String         @id @default(cuid())
+  codigo              Int            @unique @default(autoincrement())
+  emissao             DateTime       @default(now())
+  vencimento          DateTime
+  pagamento           DateTime?
+  fornecedorId        String?
+  categoria           String
+  descricao           String
+  valorOriginal       Decimal        @db.Decimal(12, 2)
+  juros               Decimal?       @db.Decimal(12, 2)
+  desconto            Decimal?       @db.Decimal(12, 2)
+  valorPago           Decimal?       @db.Decimal(12, 2)
+  formaPagamento      String?
+  eventoId            String?
+  profissionalId      String?
+  contratoId          String?
+  status              String         @default("Aberto")
+  anexoPath           String?
+  observacoes         String?
+  fornecedor          Fornecedor?    @relation(fields: [fornecedorId], references: [id])
+  evento              Evento?        @relation(fields: [eventoId], references: [id])
+  profissional        Profissional?  @relation(fields: [profissionalId], references: [id])
+  contrato            Contrato?      @relation(fields: [contratoId], references: [id])
+}
+
+model LivroCaixa {
+  id                String    @id @default(cuid())
+  codigo            Int       @unique @default(autoincrement())
+  data              DateTime  @default(now())
+  hora              String?
+  tipo              String
+  categoria         String
+  descricao         String
+  valor             Decimal   @db.Decimal(12, 2)
+  formaPagamento    String?
+  clienteNome       String?
+  fornecedorNome    String?
+  eventoId          String?
+  contratoId        String?
+  usuarioId         String?
+  observacoes       String?
+  evento            Evento?   @relation(fields: [eventoId], references: [id])
+  contrato          Contrato? @relation(fields: [contratoId], references: [id])
+  usuario           Usuario?  @relation(fields: [usuarioId], references: [id])
+}
+
+model Usuario {
+  id           String       @id @default(cuid())
+  codigo       Int          @unique @default(autoincrement())
+  nome         String
+  login        String       @unique
+  email        String?
+  telefone     String?
+  senhaHash    String
+  perfil       String       @default("Administrador")
+  ativo        Boolean      @default(true)
+  ultimoAcesso DateTime?
+  permissoes   Permissao[]
+  caixa        LivroCaixa[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Permissao {
+  id          String   @id @default(cuid())
+  usuarioId   String
+  modulo      String
+  visualizar  Boolean  @default(false)
+  incluir     Boolean  @default(false)
+  editar      Boolean  @default(false)
+  excluir     Boolean  @default(false)
+  imprimir    Boolean  @default(false)
+  exportar    Boolean  @default(false)
+  estornar    Boolean  @default(false)
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model BackupLog {
+  id          String   @id @default(cuid())
+  tipo        String
+  status      String
+  caminho     String?
+  mensagem    String?
+  createdAt   DateTime @default(now())
+}
