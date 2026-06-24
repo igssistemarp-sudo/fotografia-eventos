@@ -44,6 +44,7 @@ type ModuleKey =
   | 'financeiro'
   | 'relatorios'
   | 'usuarios'
+  | 'planosContas'
   | 'configuracoes'
 
 type RecordItem = {
@@ -89,6 +90,7 @@ const menu: Array<{ key: ModuleKey; label: string; group: string; icon: LucideIc
   { key: 'profissionais', label: 'Profissionais', group: 'Cadastros', icon: Camera },
   { key: 'fornecedores', label: 'Fornecedores', group: 'Cadastros', icon: Truck },
   { key: 'usuarios', label: 'Usuarios', group: 'Cadastros', icon: User },
+  { key: 'planosContas', label: 'Plano de Contas', group: 'Cadastros', icon: WalletCards },
   { key: 'financeiro', label: 'Financeiro', group: 'Financeiro', icon: WalletCards },
   { key: 'relatorios', label: 'Relatorios', group: 'Gestao', icon: BarChart3 },
   { key: 'configuracoes', label: 'Configuracoes', group: 'Sistema', icon: Settings },
@@ -104,6 +106,7 @@ const entityByModule: Partial<Record<ModuleKey, string>> = {
   financeiro: 'contas-receber',
   configuracoes: 'emitentes',
   usuarios: 'usuarios',
+  planosContas: 'planos-contas',
 }
 
 function formatCurrency(value?: number) {
@@ -305,6 +308,12 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
     records: [
       { codigo: 'USR-001', titulo: 'Administrador', subtitulo: 'admin@igs.local | Perfil: Administrador', status: 'Ativo', valor: '' },
     ],
+  },
+  planosContas: {
+    title: 'Plano de contas',
+    description: 'Cadastro de receitas, despesas, centros de custo e categorias financeiras.',
+    tabs: ['Cadastro'],
+    records: [],
   },
   configuracoes: {
     title: 'Configuracoes do sistema',
