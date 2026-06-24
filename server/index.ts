@@ -300,6 +300,7 @@ function normalizeUsuarioRecord(record: unknown): EntityRecord {
     perfil: typeof source.perfil === 'string' ? source.perfil : undefined,
     email: typeof source.email === 'string' ? source.email : undefined,
     telefone: typeof source.telefone === 'string' ? source.telefone : undefined,
+    observacoes: typeof source.observacoes === 'string' ? source.observacoes : undefined,
     createdAt: toApiDate(source.createdAt),
     updatedAt: toApiDate(source.updatedAt),
   }
@@ -620,13 +621,14 @@ function buildUsuarioData(payload: Record<string, unknown>) {
   const perfil = readPayloadValue(payload, 'Perfil') ?? 'Consulta'
 
   return {
-    nome: String(payload.nome ?? readPayloadValue(payload, 'Nome') ?? 'Usuario'),
-    login: String(payload.login ?? payload.nome ?? `usuario-${Date.now()}`),
+    nome: String(readPayloadValue(payload, 'Nome completo') ?? 'Usuario'),
+    login: String(readPayloadValue(payload, 'Login') ?? `usuario-${Date.now()}`),
     email: readPayloadValue(payload, 'E-mail'),
     telefone: readPayloadValue(payload, 'Telefone'),
     senhaHash: hashPassword(password),
     perfil,
     ativo: String(payload.status ?? 'Ativo') === 'Ativo',
+    observacoes: readPayloadValue(payload, 'Observacoes'),
   }
 }
 

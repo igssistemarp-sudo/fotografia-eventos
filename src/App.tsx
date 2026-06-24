@@ -43,6 +43,7 @@ type ModuleKey =
   | 'fornecedores'
   | 'financeiro'
   | 'relatorios'
+  | 'usuarios'
   | 'configuracoes'
 
 type RecordItem = {
@@ -87,6 +88,7 @@ const menu: Array<{ key: ModuleKey; label: string; group: string; icon: LucideIc
   { key: 'produtos', label: 'Produtos/Servicos', group: 'Cadastros', icon: Package },
   { key: 'profissionais', label: 'Profissionais', group: 'Cadastros', icon: Camera },
   { key: 'fornecedores', label: 'Fornecedores', group: 'Cadastros', icon: Truck },
+  { key: 'usuarios', label: 'Usuarios', group: 'Cadastros', icon: User },
   { key: 'financeiro', label: 'Financeiro', group: 'Financeiro', icon: WalletCards },
   { key: 'relatorios', label: 'Relatorios', group: 'Gestao', icon: BarChart3 },
   { key: 'configuracoes', label: 'Configuracoes', group: 'Sistema', icon: Settings },
@@ -101,6 +103,7 @@ const entityByModule: Partial<Record<ModuleKey, string>> = {
   fornecedores: 'fornecedores',
   financeiro: 'contas-receber',
   configuracoes: 'emitentes',
+  usuarios: 'usuarios',
 }
 
 function formatCurrency(value?: number) {
@@ -295,13 +298,18 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
     tabs: ['Eventos', 'Receitas', 'Despesas', 'Lucro', 'Profissionais'],
     records: [],
   },
+  usuarios: {
+    title: 'Cadastro de usuarios',
+    description: 'Gerenciamento de usuarios do sistema, perfis de acesso e credenciais.',
+    tabs: ['Dados do usuario'],
+    records: [],
+  },
   configuracoes: {
     title: 'Configuracoes do sistema',
-    description: 'Emitente, usuarios, permissoes por modulo, logs, backup manual e automatico.',
-    tabs: ['Emitente', 'Usuarios', 'Permissoes', 'Backup', 'Logs'],
+    description: 'Emitente, permissoes por modulo, backup manual e automatico e logs de auditoria.',
+    tabs: ['Emitente', 'Permissoes', 'Backup', 'Logs'],
     records: [
       { codigo: 'EMI-001', titulo: 'IGS FotoPro', subtitulo: 'Emitente principal ativo', status: 'Ativo', valor: 'CNPJ/CPF' },
-      { codigo: 'USR-001', titulo: 'Administrador', subtitulo: 'Acesso total aos modulos', status: 'Ativo', valor: 'Permissoes' },
     ],
   },
 }
@@ -457,6 +465,17 @@ const moduleFields: Record<ModuleKey, FieldItem[]> = {
     { label: 'Forma de pagamento', placeholder: 'PIX, dinheiro, cartao, boleto...' },
     { label: 'Status', placeholder: 'Todos os status' },
     { label: 'Totalizadores', placeholder: 'Rodape com totais, margem, pendencias e graficos.', wide: true, multiline: true },
+  ],
+  usuarios: [
+    { label: 'Nome completo', placeholder: 'Nome completo do usuario' },
+    { label: 'Login', placeholder: 'Nome de usuario para acesso' },
+    { label: 'E-mail', placeholder: 'usuario@exemplo.com.br' },
+    { label: 'Telefone', placeholder: '(00) 00000-0000', mask: 'phone' },
+    { label: 'Perfil', placeholder: 'Administrador, Gerente, Consulta...' },
+    { label: 'Senha', placeholder: 'Minimo 6 caracteres' },
+    { label: 'Confirmar senha', placeholder: 'Repita a senha' },
+    { label: 'Status', placeholder: 'Ativo ou Inativo' },
+    { label: 'Observacoes', placeholder: 'Informacoes adicionais sobre o usuario.', wide: true, multiline: true },
   ],
   configuracoes: [
     { label: 'Razao social', placeholder: 'Razao social da empresa' },
@@ -850,12 +869,17 @@ function App() {
     return {
       ...formValues,
       nome: selectedName || fallbackName || `${current.title} sem nome`,
-      status: 'Ativo',
+      status: formValues['Status'] || 'Ativo',
     }
   }
 
   async function saveCurrentRecord() {
     if (!activeEntity || isLoadingRecords || saveStatus === 'saving') {
+      return
+    }
+
+    if (active === 'usuarios' && formValues['Senha'] !== formValues['Confirmar senha']) {
+      setSaveStatus('error')
       return
     }
 
@@ -1390,7 +1414,7 @@ function App() {
               </div>
             )}
 
-            {(!(active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) >= 2) && !(active === 'financeiro' && (financeTab) >= 3)) && (
+            {(!(active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) >= 1) && !(active === 'financeiro' && (financeTab) >= 3)) && (
             <>
             <form className="form-panel">
               <label>
@@ -1425,8 +1449,20 @@ function App() {
                       placeholder={field.placeholder}
                       value={formValues[field.label] ?? ''}
                     />
+                  ) : active === 'usuarios' && field.label === 'Perfil' ? (
+                    <select
+                      onChange={(event) => updateFormValue(field.label, event.target.value)}
+                      value={formValues[field.label] ?? ''}
+                    >
+                      <option value="">Selecione um perfil</option>
+                      <option value="Administrador">Administrador</option>
+                      <option value="Gerente">Gerente</option>
+                      <option value="Consulta">Consulta</option>
+                      <option value="Operador">Operador</option>
+                    </select>
                   ) : (
                     <input
+                      type={active === 'usuarios' && (field.label === 'Senha' || field.label === 'Confirmar senha') ? 'password' : 'text'}
                       onChange={(event) => {
                         let value = event.target.value
                         if (field.mask === 'currency') value = maskCurrency(value)
@@ -1763,7 +1799,7 @@ function App() {
             </div>
           )}
 
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 2 && (
+          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 1 && (
             <>
               <div className="permission-panel">
                 <div>
@@ -1790,7 +1826,7 @@ function App() {
               </div>
             </>
           )}
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 4 && (
+          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 3 && (
             <div className="backup-panel">
               <div>
                 <span className="eyebrow">Logs de auditoria</span>
@@ -2024,7 +2060,7 @@ function App() {
             </div>
           )}
 
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 3 && (
+          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 2 && (
             <div className="backup-panel">
               <div>
                 <span className="eyebrow">Backup PostgreSQL</span>
