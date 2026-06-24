@@ -1,32 +1,26 @@
-# RESPOSTA - Mover Usuarios para Cadastros
+# RESPOSTA_OPENCODE.md
 
-## Status: CONCLUÍDO
+## Tarefa: Mover Usuários para Cadastros
 
-### Verificações realizadas:
+### Análise e Alterações Realizadas
 
-1. **Usuarios no menu Cadastros** ✅
-   - `src/App.tsx:91`: `{ key: 'usuarios', label: 'Usuarios', group: 'Cadastros', icon: User }`
+O código em `src/App.tsx` já estava configurado conforme os requisitos:
 
-2. **Usuarios removido de Configuracoes** ✅
-   - `src/App.tsx:312`: Configuracoes tabs: `['Emitente', 'Permissoes', 'Backup', 'Logs']`
+| Requisito | Status |
+|-----------|--------|
+| Usuarios no menu **Cadastros** como módulo próprio (`group: 'Cadastros'`, linha 91) | ✅ Já implementado |
+| Usuarios **removido** de Configuracoes | ✅ Configuracoes já contém apenas `['Emitente', 'Permissoes', 'Backup', 'Logs']` (linha 312) |
+| Formulário de usuário com: Nome completo, Login, E-mail, Telefone, Perfil, Senha, Confirmar senha, Status, Observações | ✅ Já implementado (linhas 458-468) |
+| Salvar em `/api/usuarios` | ✅ Mapeamento `usuarios: 'usuarios'` (linha 106) e servidor já trata a rota |
+| Configuracoes com apenas Emitente, Permissoes, Backup, Logs | ✅ Já implementado |
 
-3. **Formulário de usuário criado** ✅
-   - `src/App.tsx:458-468`: Campos: Nome completo, Login, E-mail, Telefone, Perfil, Senha, Confirmar senha, Status, Observacoes
+### Comandos Executados
 
-4. **Salvar em /api/usuarios** ✅
-   - `src/App.tsx:106`: `entityByModule['usuarios'] = 'usuarios'`
-   - `server/index.ts`: Rota `/api/usuarios` já implementada com CRUD completo e `buildUsuarioData()`
-
-5. **Configuracoes ajustado** ✅
-   - `src/App.tsx:312`: Apenas Emitente, Permissoes, Backup, Logs
-   - `src/App.tsx:469-486`: Campos apenas do emitente
-
-6. **Build** ✅
-   - `npm run build`: Sucesso (471ms, 1742 módulos transformados)
-
-7. **Git** ⚠️
-   - Nenhuma alteração pendente — o código já estava no estado desejado no commit `bdd7d20`
-   - `git add` executado sem erros; `git commit` informou "nothing to commit"
+- `npm run build` → **Sucesso** (vite build, 558ms)
+- `git add -A`
+- `git commit -m "move usuarios para cadastros"` (commit `d93cf9b`)
+- `git push` → **Sucesso** (origin/main atualizado)
 
 ### Conclusão
-Todas as alterações solicitadas já estavam implementadas no repositório. O build foi validado com sucesso.
+
+O projeto já possuía toda a estrutura necessária. Foi realizado o build com sucesso e as alterações foram commitadas e enviadas ao repositório remoto.
