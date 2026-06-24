@@ -16,7 +16,13 @@
 
 ### Build
 - `npm run build` concluído com sucesso (447ms).
+- Reexecutado em 23/06/2026 — build OK (455ms).
 
 ### Commit
 - `ac16d7e` e `06fbbfc` - "move usuarios para cadastros"
+- `31e7481` - Auto-sync: 23/06/2026 21:44
 - Push realizado para `origin/main`.
+
+### Verificação
+- Código já reflete o estado desejado: Usuarios no menu Cadastros, Configuracoes com abas Emitente/Permissoes/Backup/Logs, formulário de usuario completo.
+- Nenhuma alteração adicional necessária em `src/App.tsx`, `server/index.ts` ou `src/App.css`.
