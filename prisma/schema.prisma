@@ -341,3 +341,18 @@ model BackupLog {
   mensagem    String?
   createdAt   DateTime @default(now())
 }
+
+model PlanoConta {
+  id          String   @id @default(cuid())
+  codigo      Int      @unique @default(autoincrement())
+  tipo        String
+  grupo       String?
+  descricao   String
+  contaPai    String?
+  natureza    String
+  centroCusto String?
+  ativo       Boolean  @default(true)
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

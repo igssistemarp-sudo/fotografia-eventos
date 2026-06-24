@@ -24,6 +24,7 @@ type EntityKey =
   | 'contas-pagar'
   | 'livro-caixa'
   | 'usuarios'
+  | 'planos-contas'
 
 type EntityRecord = {
   id: string
@@ -107,6 +108,10 @@ type PrismaClientLike = {
   permissao: {
     createMany: (args: unknown) => Promise<unknown>
   }
+  planoConta: {
+    findMany: (args?: unknown) => Promise<unknown[]>
+    create: (args: unknown) => Promise<unknown>
+  }
 }
 
 const app = express()
@@ -138,6 +143,7 @@ const entityNames: EntityKey[] = [
   'contas-pagar',
   'livro-caixa',
   'usuarios',
+  'planos-contas',
 ]
 
 const store = entityNames.reduce<Record<EntityKey, EntityRecord[]>>((database, entity) => {
@@ -198,6 +204,7 @@ function isPostgresEntity(entity: EntityKey) {
     'contas-pagar',
     'livro-caixa',
     'usuarios',
+    'planos-contas',
   ].includes(entity)
 }
 
@@ -301,6 +308,29 @@ function normalizeUsuarioRecord(record: unknown): EntityRecord {
     perfil: typeof source.perfil === 'string' ? source.perfil : undefined,
     email: typeof source.email === 'string' ? source.email : undefined,
     telefone: typeof source.telefone === 'string' ? source.telefone : undefined,
+    observacoes: typeof source.observacoes === 'string' ? source.observacoes : undefined,
+    createdAt: toApiDate(source.createdAt),
+    updatedAt: toApiDate(source.updatedAt),
+  }
+}
+
+function normalizePlanoContaRecord(record: unknown): EntityRecord {
+  const source = record as Record<string, unknown>
+  const codigo = typeof source.codigo === 'number' ? String(source.codigo).padStart(4, '0') : String(source.codigo ?? 'PLN')
+  const nome = String(source.descricao ?? 'Plano de contas')
+  const status = typeof source.ativo === 'boolean' ? (source.ativo ? 'Ativo' : 'Inativo') : String(source.status ?? 'Ativo')
+
+  return {
+    id: String(source.id ?? crypto.randomUUID()),
+    codigo,
+    nome,
+    status,
+    tipo: typeof source.tipo === 'string' ? source.tipo : undefined,
+    grupo: typeof source.grupo === 'string' ? source.grupo : undefined,
+    descricao: typeof source.descricao === 'string' ? source.descricao : undefined,
+    contaPai: typeof source.contaPai === 'string' ? source.contaPai : undefined,
+    natureza: typeof source.natureza === 'string' ? source.natureza : undefined,
+    centroCusto: typeof source.centroCusto === 'string' ? source.centroCusto : undefined,
     observacoes: typeof source.observacoes === 'string' ? source.observacoes : undefined,
     createdAt: toApiDate(source.createdAt),
     updatedAt: toApiDate(source.updatedAt),
@@ -648,6 +678,23 @@ function buildUsuarioData(payload: Record<string, unknown>) {
   }
 }
 
+function buildPlanoContaData(payload: Record<string, unknown>) {
+  const tipo = readPayloadValue(payload, 'Tipo') ?? 'Receita'
+  const natureza = readPayloadValue(payload, 'Natureza') ?? 'Entrada'
+  const ativo = String(payload.status ?? 'Ativo') === 'Ativo'
+
+  return {
+    tipo,
+    grupo: readPayloadValue(payload, 'Grupo'),
+    descricao: String(payload.nome ?? readPayloadValue(payload, 'Descricao da conta') ?? 'Plano de contas'),
+    contaPai: readPayloadValue(payload, 'Conta pai'),
+    natureza,
+    centroCusto: readPayloadValue(payload, 'Centro de custo'),
+    ativo,
+    observacoes: readPayloadValue(payload, 'Observacoes'),
+  }
+}
+
 async function listPostgresRecords(entity: EntityKey) {
   const prisma = await getPrisma()
 
@@ -707,6 +754,11 @@ async function listPostgresRecords(entity: EntityKey) {
     return records.map(normalizeUsuarioRecord)
   }
 
+  if (entity === 'planos-contas') {
+    const records = await prisma.planoConta.findMany({ orderBy: { codigo: 'asc' } })
+    return records.map(normalizePlanoContaRecord)
+  }
+
   return store[entity]
 }
 
@@ -755,6 +807,10 @@ async function createPostgresRecord(entity: EntityKey, payload: Record<string, u
 
   if (entity === 'usuarios') {
     return normalizeUsuarioRecord(await prisma.usuario.create({ data: buildUsuarioData(payload) }))
+  }
+
+  if (entity === 'planos-contas') {
+    return normalizePlanoContaRecord(await prisma.planoConta.create({ data: buildPlanoContaData(payload) }))
   }
 
   throw new Error('Modulo ainda nao migrado para PostgreSQL.')
