@@ -302,7 +302,9 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
     title: 'Cadastro de usuarios',
     description: 'Gerenciamento de usuarios do sistema, perfis de acesso e credenciais.',
     tabs: ['Dados do usuario'],
-    records: [],
+    records: [
+      { codigo: 'USR-001', titulo: 'Administrador', subtitulo: 'admin@igs.local | Perfil: Administrador', status: 'Ativo', valor: '' },
+    ],
   },
   configuracoes: {
     title: 'Configuracoes do sistema',
@@ -621,6 +623,7 @@ function App() {
   const [apiStatus, setApiStatus] = useState<'demo' | 'online' | 'offline'>('demo')
   const [formValues, setFormValues] = useState<Record<string, string>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [saveErrorMessage, setSaveErrorMessage] = useState('')
   const [refreshKey, setRefreshKey] = useState(0)
   const [loginForm, setLoginForm] = useState({ senha: '123', usuario: 'admin' })
   const [loginStatus, setLoginStatus] = useState<'idle' | 'loading' | 'error' | 'offline-demo'>('idle')
@@ -771,6 +774,7 @@ function App() {
     financeiro: { visualizar: true, incluir: true, editar: true, excluir: true },
     relatorios: { visualizar: true, incluir: true, editar: true, excluir: true },
     configuracoes: { visualizar: true, incluir: true, editar: true, excluir: true },
+    usuarios: { visualizar: true, incluir: true, editar: true, excluir: true },
   }
 
   const [userPermissions, setUserPermissions] = useState(defaultPermissions)
@@ -879,10 +883,12 @@ function App() {
     }
 
     if (active === 'usuarios' && formValues['Senha'] !== formValues['Confirmar senha']) {
+      setSaveErrorMessage('Senha e Confirmar senha nao conferem.')
       setSaveStatus('error')
       return
     }
 
+    setSaveErrorMessage('')
     setSaveStatus('saving')
 
     try {
@@ -900,6 +906,7 @@ function App() {
       setSaveStatus('saved')
       setRefreshKey((key) => key + 1)
     } catch {
+      setSaveErrorMessage('Falha ao salvar. API offline ou erro no servidor.')
       setSaveStatus('error')
       setApiStatus((prev) => (prev === 'online' ? 'offline' : prev))
     }
@@ -1387,7 +1394,7 @@ function App() {
             <div className={`save-feedback ${saveStatus}`}>
               {saveStatus === 'saving' && 'Salvando registro na API local...'}
               {saveStatus === 'saved' && 'Registro salvo com sucesso e lista atualizada.'}
-              {saveStatus === 'error' && 'Nao foi possivel salvar. Verifique se a API esta rodando.'}
+              {saveStatus === 'error' && (saveErrorMessage || 'Nao foi possivel salvar. Verifique se a API esta rodando.')}
             </div>
           )}
 
@@ -1459,6 +1466,14 @@ function App() {
                       <option value="Gerente">Gerente</option>
                       <option value="Consulta">Consulta</option>
                       <option value="Operador">Operador</option>
+                    </select>
+                  ) : active === 'usuarios' && field.label === 'Status' ? (
+                    <select
+                      onChange={(event) => updateFormValue(field.label, event.target.value)}
+                      value={formValues[field.label] ?? 'Ativo'}
+                    >
+                      <option value="Ativo">Ativo</option>
+                      <option value="Inativo">Inativo</option>
                     </select>
                   ) : (
                     <input
