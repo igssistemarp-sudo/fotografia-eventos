@@ -288,8 +288,8 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
   },
   financeiro: {
     title: 'Financeiro integrado',
-    description: 'Livro caixa, contas a receber, contas a pagar, parcelas, despesas e lucro por evento.',
-    tabs: ['Livro caixa', 'Receber', 'Pagar', 'Despesas por evento', 'Fluxo'],
+    description: 'Livro Caixa, contas a receber, contas a pagar, despesas por evento e fluxo de caixa.',
+    tabs: ['Livro Caixa', 'Contas a Receber', 'Contas a Pagar', 'Despesas por Evento', 'Fluxo de Caixa'],
     records: [],
   },
   relatorios: {
