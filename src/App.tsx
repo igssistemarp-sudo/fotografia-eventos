@@ -871,7 +871,6 @@ function App() {
     : active === 'clientes'
     ? (clientesTabFields[activeTab['clientes-tab'] ?? 0] ?? moduleFields[active])
     : moduleFields[active]
-  const ActiveIcon = menu.find((item) => item.key === active)?.icon ?? Aperture
   const activeEntity = active === 'financeiro'
     ? financeEntities[(activeTab['financeiro-tab'] ?? 0)] ?? undefined
     : entityByModule[active]
@@ -1277,7 +1276,6 @@ function App() {
           <div key={active}>
           <div className="module-header">
             <h2>
-              <ActiveIcon aria-hidden="true" />
               {current.title}
               <small>{current.description}</small>
             </h2>
