@@ -1,26 +1,22 @@
-# RESPOSTA_OPENCODE.md
+# RESPOSTA - Movido Usuarios para Cadastros
 
-## Tarefa: Mover Usuários para Cadastros
+## Status: CONCLUIDO
 
-### Análise e Alterações Realizadas
+### Verificacoes realizadas
 
-O código em `src/App.tsx` já estava configurado conforme os requisitos:
+**src/App.tsx:**
+- Usuarios movido para grupo "Cadastros" no menu (linha 91)
+- Usuarios removido de Configuracoes
+- Formulario proprio de usuario criado com: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha, Status (select), Observacoes
+- Salvamento configurado para `/api/usuarios` via `entityByModule`
+- Configuracoes ajustado para somente: Emitente, Permissoes, Backup, Logs
 
-| Requisito | Status |
-|-----------|--------|
-| Usuarios no menu **Cadastros** como módulo próprio (`group: 'Cadastros'`, linha 91) | ✅ Já implementado |
-| Usuarios **removido** de Configuracoes | ✅ Configuracoes já contém apenas `['Emitente', 'Permissoes', 'Backup', 'Logs']` (linha 312) |
-| Formulário de usuário com: Nome completo, Login, E-mail, Telefone, Perfil, Senha, Confirmar senha, Status, Observações | ✅ Já implementado (linhas 458-468) |
-| Salvar em `/api/usuarios` | ✅ Mapeamento `usuarios: 'usuarios'` (linha 106) e servidor já trata a rota |
-| Configuracoes com apenas Emitente, Permissoes, Backup, Logs | ✅ Já implementado |
+**server/index.ts:**
+- Rota `/api/usuarios` ja tratada pelo generic CRUD (`/api/:entity`)
+- `buildUsuarioData` existente com todos os campos: nome, login, email, telefone, senhaHash, perfil, ativo, observacoes
+- EntityKey inclui `usuarios` na lista de entidades
 
-### Comandos Executados
+**Build:** `npm run build` executado com sucesso (sem erros)
 
-- `npm run build` → **Sucesso** (vite build, 558ms)
-- `git add -A`
-- `git commit -m "move usuarios para cadastros"` (commit `d93cf9b`)
-- `git push` → **Sucesso** (origin/main atualizado)
-
-### Conclusão
-
-O projeto já possuía toda a estrutura necessária. Foi realizado o build com sucesso e as alterações foram commitadas e enviadas ao repositório remoto.
+### Comandos git
+Nenhum arquivo fonte foi modificado pois as alteracoes ja estavam aplicadas do commit anterior (`d93cf9b`). Nao ha o que commitar.
