@@ -44,6 +44,7 @@ type ModuleKey =
   | 'financeiro'
   | 'relatorios'
   | 'usuarios'
+  | 'permissoes'
   | 'configuracoes'
 
 type RecordItem = {
@@ -91,6 +92,7 @@ const menu: Array<{ key: ModuleKey; label: string; group: string; icon: LucideIc
   { key: 'usuarios', label: 'Usuarios', group: 'Cadastros', icon: User },
   { key: 'financeiro', label: 'Financeiro', group: 'Financeiro', icon: WalletCards },
   { key: 'relatorios', label: 'Relatorios', group: 'Gestao', icon: BarChart3 },
+  { key: 'permissoes', label: 'Permissoes', group: 'Sistema', icon: LockKeyhole },
   { key: 'configuracoes', label: 'Configuracoes', group: 'Sistema', icon: Settings },
 ]
 
@@ -306,9 +308,15 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
       { codigo: 'USR-001', titulo: 'Administrador', subtitulo: 'admin@igs.local | Perfil: Administrador', status: 'Ativo', valor: '' },
     ],
   },
+  permissoes: {
+    title: 'Permissoes do sistema',
+    description: 'Controle de acesso e permissoes por modulo para cada perfil de usuario.',
+    tabs: ['Permissoes'],
+    records: [],
+  },
   configuracoes: {
     title: 'Configuracoes do sistema',
-    description: 'Emitente, permissoes por modulo, backup manual e automatico e logs de auditoria.',
+    description: 'Emitente, permissoes, backup manual e automatico e logs de auditoria.',
     tabs: ['Emitente', 'Permissoes', 'Backup', 'Logs'],
     records: [
       { codigo: 'EMI-001', titulo: 'IGS FotoPro', subtitulo: 'Emitente principal ativo', status: 'Ativo', valor: 'CNPJ/CPF' },
@@ -478,6 +486,9 @@ const moduleFields: Record<ModuleKey, FieldItem[]> = {
     { label: 'Confirmar senha', placeholder: 'Repita a senha' },
     { label: 'Status', placeholder: 'Ativo ou Inativo' },
     { label: 'Observacoes', placeholder: 'Informacoes adicionais sobre o usuario.', wide: true, multiline: true },
+  ],
+  permissoes: [
+    { label: 'Modulo', placeholder: 'Selecione o modulo para configurar permissoes' },
   ],
   configuracoes: [
     { label: 'Razao social', placeholder: 'Razao social da empresa' },
@@ -775,6 +786,7 @@ function App() {
     relatorios: { visualizar: true, incluir: true, editar: true, excluir: true },
     configuracoes: { visualizar: true, incluir: true, editar: true, excluir: true },
     usuarios: { visualizar: true, incluir: true, editar: true, excluir: true },
+    permissoes: { visualizar: true, incluir: true, editar: true, excluir: true },
   }
 
   const [userPermissions, setUserPermissions] = useState(defaultPermissions)
@@ -1421,7 +1433,7 @@ function App() {
               </div>
             )}
 
-            {(!(active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) >= 1) && !(active === 'financeiro' && (financeTab) >= 3)) && (
+            {(!(active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) >= 1) && !(active === 'financeiro' && (financeTab) >= 3) && active !== 'permissoes') && (
             <>
             <form className="form-panel">
               <label>
@@ -1814,7 +1826,7 @@ function App() {
             </div>
           )}
 
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 1 && (
+          {active === 'permissoes' && (
             <>
               <div className="permission-panel">
                 <div>
@@ -1841,7 +1853,7 @@ function App() {
               </div>
             </>
           )}
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 3 && (
+          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 2 && (
             <div className="backup-panel">
               <div>
                 <span className="eyebrow">Logs de auditoria</span>
@@ -2075,7 +2087,7 @@ function App() {
             </div>
           )}
 
-          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 2 && (
+          {active === 'configuracoes' && (activeTab['configuracoes-tab'] ?? 0) === 1 && (
             <div className="backup-panel">
               <div>
                 <span className="eyebrow">Backup PostgreSQL</span>
