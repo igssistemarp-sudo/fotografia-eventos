@@ -1,27 +1,21 @@
-# RESPOSTA - Mover Usuarios para Cadastros
+## Resumo das alterações
 
-## Status: CONCLUÍDO
+### `src/App.tsx`
+- **Usuarios**: Mantido como módulo próprio no menu **Cadastros** com formulário contendo: Nome completo, Login, E-mail, Telefone, Perfil (select: Administrador/Gerente/Consulta/Operador), Senha, Confirmar senha, Status (select: Ativo/Inativo), Observacoes. Salvamento em `/api/usuarios`.
+- **Configuracoes**: Agora contém abas: **Emitente**, **Permissoes**, **Backup** e **Logs**.
+- **Permissoes**: Módulo movido para dentro de Configuracoes (aba Permissoes). Entrada removida da `ModuleKey`, do `menu`, do `moduleData`, do `moduleFields` e do `defaultPermissions`.
+- Ajuste das condições de renderização dos painéis (backup tab 1→2, logs tab 2→3, permissoes tab 1).
+- Ajuste na importação e remoção de referências obsoletas ao módulo `permissoes`.
 
-### Verificações realizadas
+### `server/index.ts`
+- Nenhuma alteração necessária — rota `/api/usuarios` já existia e mapeava corretamente os campos do formulário.
 
-| Requisito | Status | Localização |
-|-----------|--------|-------------|
-| Usuarios no menu Cadastros como módulo próprio | ✅ OK | `src/App.tsx:92` - `group: 'Cadastros'` |
-| Usuarios removido de Configuracoes | ✅ OK | `src/App.tsx:320` - Tabs: `['Emitente', 'Backup', 'Logs']` |
-| Formulário com Nome completo, Login, E-mail, Telefone, Perfil, Senha, Confirmar senha, Status, Observacoes | ✅ OK | `src/App.tsx:479-489` |
-| Salvar em /api/usuarios | ✅ OK | `src/App.tsx:108` - `entityByModule['usuarios'] = 'usuarios'` |
-| Configuracoes com somente Emitente, Backup, Logs | ✅ OK | `src/App.tsx:320` - Permissoes movido para módulo próprio no grupo Sistema |
-| Permissoes como módulo independente | ✅ OK | `src/App.tsx:95,311-316` - Grupo Sistema, com painel de permissões próprio |
-| Server/index.ts com suporte a usuarios | ✅ OK | `server/index.ts:619-633` - `buildUsuarioData()` com hash de senha |
-| Build (npm run build) | ✅ OK | Compilou sem erros (487ms) |
+### `src/App.css`
+- Nenhuma alteração necessária.
 
-### Commits relacionados
-- `5ef836e` - move usuarios para cadastros
-- `22e7ec2` - remove permissoes das abas configs, move para modulo sistema
+### Build
+- `npm run build` concluído com sucesso (443ms).
 
-### Ações executadas
-1. Usuarios movido para menu Cadastros como módulo próprio com formulário completo
-2. Permissoes extraído de Configuracoes para módulo independente no grupo Sistema
-3. Configuracoes ajustado para somente Emitente, Backup e Logs
-4. `npm run build` - compilado com sucesso
-5. Código já commitado e sincronizado no remoto
+### Commit
+- `ac16d7e` - "move usuarios para cadastros"
+- Push realizado para `origin/main`.
