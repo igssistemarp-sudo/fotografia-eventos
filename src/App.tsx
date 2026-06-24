@@ -316,8 +316,8 @@ const moduleData: Record<ModuleKey, { title: string; description: string; tabs: 
   },
   configuracoes: {
     title: 'Configuracoes do sistema',
-    description: 'Emitente, permissoes, backup manual e automatico e logs de auditoria.',
-    tabs: ['Emitente', 'Permissoes', 'Backup', 'Logs'],
+    description: 'Emitente, backup e logs de auditoria.',
+    tabs: ['Emitente', 'Backup', 'Logs'],
     records: [
       { codigo: 'EMI-001', titulo: 'IGS FotoPro', subtitulo: 'Emitente principal ativo', status: 'Ativo', valor: 'CNPJ/CPF' },
     ],
