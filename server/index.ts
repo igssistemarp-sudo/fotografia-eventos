@@ -416,6 +416,15 @@ async function ensureAdminUser(prisma: PrismaClientLike) {
 }
 
 function buildClienteData(payload: Record<string, unknown>) {
+  const enderecoParts = [
+    readPayloadValue(payload, 'Endereco'),
+    readPayloadValue(payload, 'Numero'),
+    readPayloadValue(payload, 'Bairro'),
+    readPayloadValue(payload, 'Cidade'),
+    readPayloadValue(payload, 'UF'),
+    readPayloadValue(payload, 'Complemento'),
+  ].filter((v): v is string => typeof v === 'string' && v.length > 0)
+
   return {
     tipo: String(payload.tipo ?? payload.tipoPessoa ?? 'Pessoa fisica'),
     categoria: readPayloadValue(payload, 'Categoria'),
@@ -429,7 +438,7 @@ function buildClienteData(payload: Record<string, unknown>) {
     email: readPayloadValue(payload, 'E-mail'),
     instagram: readPayloadValue(payload, 'Instagram'),
     cep: readPayloadValue(payload, 'CEP'),
-    endereco: readPayloadValue(payload, 'Endereco'),
+    endereco: enderecoParts.length > 0 ? enderecoParts.join(', ') : readPayloadValue(payload, 'Endereco'),
     profissao: readPayloadValue(payload, 'Profissao'),
     responsavelFinanceiro: readPayloadValue(payload, 'Responsavel financeiro'),
     cpfResponsavel: readPayloadValue(payload, 'CPF do responsavel'),

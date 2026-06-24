@@ -6,6 +6,7 @@
 - **Permissoes**: Módulo movido para dentro de Configuracoes (aba Permissoes). Entrada removida da `ModuleKey`, do `menu`, do `moduleData`, do `moduleFields` e do `defaultPermissions`.
 - Ajuste das condições de renderização dos painéis (backup tab 1→2, logs tab 2→3, permissoes tab 1).
 - Ajuste na importação e remoção de referências obsoletas ao módulo `permissoes`.
+- **Clientes**: Campos reorganizados em abas (Dados pessoais, Endereco, Formatura/Evento, Historico) com `clientesTabFields`.
 
 ### `server/index.ts`
 - Nenhuma alteração necessária — rota `/api/usuarios` já existia e mapeava corretamente os campos do formulário.
@@ -14,8 +15,8 @@
 - Nenhuma alteração necessária.
 
 ### Build
-- `npm run build` concluído com sucesso (443ms).
+- `npm run build` concluído com sucesso (447ms).
 
 ### Commit
-- `ac16d7e` - "move usuarios para cadastros"
+- `ac16d7e` e `06fbbfc` - "move usuarios para cadastros"
 - Push realizado para `origin/main`.

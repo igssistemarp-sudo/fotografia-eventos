@@ -1458,7 +1458,7 @@ function App() {
                 Codigo
                 <input value="Novo" readOnly />
               </label>
-          {active === 'clientes' && (activeTab['clientes-tab'] ?? 0) === 2 && (
+          {active === 'clientes' && (activeTab['clientes-tab'] ?? 0) === 0 && (
                 <label>
                   Tipo de pessoa
                   <select
