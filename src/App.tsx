@@ -361,28 +361,15 @@ const moduleFields: Record<ModuleKey, FieldItem[]> = {
     { label: 'Observacoes', placeholder: 'Informacoes adicionais do evento.', wide: true, multiline: true },
   ],
   clientes: [
-    { label: 'Categoria', placeholder: 'Noivo(a), formando, escola, empresa...' },
     { label: 'Nome completo', placeholder: 'Nome do cliente' },
     { label: 'Nome fantasia / apelido', placeholder: 'Apelido ou nome fantasia' },
     { label: 'CPF/CNPJ', placeholder: '000.000.000-00 / 00.000.000/0000-00', mask: 'cpf-cnpj' },
     { label: 'RG / IE', placeholder: 'RG ou Inscricao Estadual' },
-    { label: 'Data de nascimento', placeholder: '01/01/1990', mask: 'date' },
     { label: 'Telefone', placeholder: '(00) 00000-0000', mask: 'phone' },
     { label: 'WhatsApp', placeholder: '(00) 00000-0000', mask: 'phone' },
     { label: 'E-mail', placeholder: 'cliente@exemplo.com.br' },
     { label: 'Instagram', placeholder: '@cliente' },
-    { label: 'CEP', placeholder: '00000-000', mask: 'cep' },
-    { label: 'Endereco', placeholder: 'Rua, numero, bairro, cidade - UF' },
-    { label: 'Profissao', placeholder: 'Profissao do cliente' },
-    { label: 'Responsavel financeiro', placeholder: 'Nome do responsavel (se aplicavel)' },
-    { label: 'CPF do responsavel', placeholder: '000.000.000-00', mask: 'cpf-cnpj' },
-    { label: 'Curso / Turma', placeholder: 'Obrigatorio para formatura' },
-    { label: 'Instituicao de ensino', placeholder: 'Escola ou faculdade' },
-    { label: 'Ano / semestre conclusao', placeholder: '2026/1' },
-    { label: 'Pacote contratado', placeholder: 'Nome do pacote para formatura' },
-    { label: 'Valor do pacote', placeholder: 'R$ 0,00', mask: 'currency' },
-    { label: 'Quantidade de parcelas', placeholder: 'Ex: 20' },
-    { label: 'Observacoes', placeholder: 'Historico, preferencias, observacoes gerais.', wide: true, multiline: true },
+    { label: 'Status', placeholder: 'Ativo' },
   ],
   contratos: [
     { label: 'Modelo de contrato', placeholder: 'Casamento, formatura, ensaio, evento corporativo...' },
@@ -496,6 +483,45 @@ const moduleFields: Record<ModuleKey, FieldItem[]> = {
     { label: 'CPF do responsavel', placeholder: '000.000.000-00', mask: 'cpf-cnpj' },
     { label: 'E-mail financeiro', placeholder: 'financeiro@igsfotopro.com.br' },
     { label: 'Observacoes', placeholder: 'Informacoes adicionais sobre o emitente.', wide: true, multiline: true },
+  ],
+}
+
+const clientesTabFields: Record<number, FieldItem[]> = {
+  0: [
+    { label: 'Nome completo', placeholder: 'Nome do cliente' },
+    { label: 'Nome fantasia / apelido', placeholder: 'Apelido ou nome fantasia' },
+    { label: 'CPF/CNPJ', placeholder: '000.000.000-00 / 00.000.000/0000-00', mask: 'cpf-cnpj' },
+    { label: 'RG / IE', placeholder: 'RG ou Inscricao Estadual' },
+    { label: 'Telefone', placeholder: '(00) 00000-0000', mask: 'phone' },
+    { label: 'WhatsApp', placeholder: '(00) 00000-0000', mask: 'phone' },
+    { label: 'E-mail', placeholder: 'cliente@exemplo.com.br' },
+    { label: 'Instagram', placeholder: '@cliente' },
+    { label: 'Status', placeholder: 'Ativo' },
+  ],
+  1: [
+    { label: 'CEP', placeholder: '00000-000', mask: 'cep' },
+    { label: 'Endereco', placeholder: 'Rua' },
+    { label: 'Numero', placeholder: 'Nº' },
+    { label: 'Bairro', placeholder: 'Bairro' },
+    { label: 'Cidade', placeholder: 'Cidade' },
+    { label: 'UF', placeholder: 'UF' },
+    { label: 'Complemento', placeholder: 'Complemento' },
+  ],
+  2: [
+    { label: 'Responsavel financeiro', placeholder: 'Nome do responsavel (se aplicavel)' },
+    { label: 'CPF do responsavel', placeholder: '000.000.000-00', mask: 'cpf-cnpj' },
+    { label: 'Curso / Turma', placeholder: 'Obrigatorio para formatura' },
+    { label: 'Instituicao de ensino', placeholder: 'Escola ou faculdade' },
+    { label: 'Ano / semestre conclusao', placeholder: '2026/1' },
+    { label: 'Pacote contratado', placeholder: 'Nome do pacote para formatura' },
+    { label: 'Valor do pacote', placeholder: 'R$ 0,00', mask: 'currency' },
+    { label: 'Quantidade de parcelas', placeholder: 'Ex: 20' },
+  ],
+  3: [
+    { label: 'Profissao', placeholder: 'Profissao do cliente' },
+    { label: 'Observacoes', placeholder: 'Historico, preferencias, observacoes gerais.', wide: true, multiline: true },
+    { label: 'Preferencias', placeholder: 'Preferencias do cliente', wide: true, multiline: true },
+    { label: 'Historico de atendimento', placeholder: 'Historico de atendimentos anteriores', wide: true, multiline: true },
   ],
 }
 
@@ -823,8 +849,10 @@ function App() {
     if (data) {
       setFormValues((prev) => ({
         ...prev,
-        'Endereco': `${data.logradouro || ''}, ${data.bairro || ''} - ${data.localidade || ''} - ${data.uf || ''}`.replace(/^, |^- /, '').trim() || prev['Endereco'],
-        'Endereco completo': `${data.logradouro || ''}, ${data.bairro || ''} - ${data.localidade || ''} - ${data.uf || ''}`.replace(/^, |^- /, '').trim() || prev['Endereco completo'],
+        'Endereco': data.logradouro || prev['Endereco'],
+        'Bairro': data.bairro || prev['Bairro'],
+        'Cidade': data.localidade || prev['Cidade'],
+        'UF': data.uf || prev['UF'],
       }))
       setCepLookupStatus('found')
     } else {
@@ -836,6 +864,8 @@ function App() {
   const financeTab = (activeTab['financeiro-tab'] ?? 0)
   const fields = active === 'financeiro'
     ? (financeTabFields[financeTab] ?? moduleFields[active])
+    : active === 'clientes'
+    ? (clientesTabFields[activeTab['clientes-tab'] ?? 0] ?? moduleFields[active])
     : moduleFields[active]
   const ActiveIcon = menu.find((item) => item.key === active)?.icon ?? Aperture
   const activeEntity = active === 'financeiro'
@@ -1425,8 +1455,8 @@ function App() {
             <>
             <form className="form-panel">
               <label>
-                Codigo automatico
-                <input value="GERADO AO SALVAR" readOnly />
+                Codigo
+                <input value="Novo" readOnly />
               </label>
           {active === 'clientes' && (activeTab['clientes-tab'] ?? 0) === 2 && (
                 <label>
