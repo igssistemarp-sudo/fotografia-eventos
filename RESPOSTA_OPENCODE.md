@@ -1,28 +1,26 @@
-## Resumo das alterações
+# RESPOSTA - Execução das Instruções
 
-### `src/App.tsx`
-- **Usuarios**: Mantido como módulo próprio no menu **Cadastros** com formulário contendo: Nome completo, Login, E-mail, Telefone, Perfil (select: Administrador/Gerente/Consulta/Operador), Senha, Confirmar senha, Status (select: Ativo/Inativo), Observacoes. Salvamento em `/api/usuarios`.
-- **Configuracoes**: Agora contém abas: **Emitente**, **Permissoes**, **Backup** e **Logs**.
-- **Permissoes**: Módulo movido para dentro de Configuracoes (aba Permissoes). Entrada removida da `ModuleKey`, do `menu`, do `moduleData`, do `moduleFields` e do `defaultPermissions`.
-- Ajuste das condições de renderização dos painéis (backup tab 1→2, logs tab 2→3, permissoes tab 1).
-- Ajuste na importação e remoção de referências obsoletas ao módulo `permissoes`.
-- **Clientes**: Campos reorganizados em abas (Dados pessoais, Endereco, Formatura/Evento, Historico) com `clientesTabFields`.
+## Status: CONCLUÍDO
 
-### `server/index.ts`
-- Nenhuma alteração necessária — rota `/api/usuarios` já existia e mapeava corretamente os campos do formulário.
+### Alterações realizadas no commit `4007177` (já aplicado)
 
-### `src/App.css`
-- Nenhuma alteração necessária.
+1. **src/App.tsx**:
+   - Movido `Usuarios` para o menu **Cadastros** como módulo próprio (grupo `'Cadastros'`, ícone `User`)
+   - Removido `Usuarios` das abas de `Configuracoes` (Configuracoes agora contém apenas: **Emitente**, **Permissoes**, **Backup**, **Logs**)
+   - Criado formulário próprio de usuário com os campos: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha, Status (select Ativo/Inativo) e Observacoes
+   - Salvamento via POST para `/api/usuarios`
 
-### Build
-- `npm run build` concluído com sucesso (447ms).
-- Reexecutado em 23/06/2026 — build OK (455ms).
+2. **server/index.ts**:
+   - Rota `/api/usuarios` já existente e funcional
+   - CRUD completo com suporte a hash de senha (scrypt)
+   - `buildUsuarioData` extrai campos: Nome completo, Login, E-mail, Telefone, Perfil, Senha, Status e Observacoes
 
-### Commit
-- `ac16d7e` e `06fbbfc` - "move usuarios para cadastros"
-- `31e7481` - Auto-sync: 23/06/2026 21:44
-- Push realizado para `origin/main`.
+3. **Build**: `npm run build` executado com sucesso (Vite build em 434ms)
 
-### Verificação
-- Código já reflete o estado desejado: Usuarios no menu Cadastros, Configuracoes com abas Emitente/Permissoes/Backup/Logs, formulário de usuario completo.
-- Nenhuma alteração adicional necessária em `src/App.tsx`, `server/index.ts` ou `src/App.css`.
+### Comandos executados
+- `npm run build` ✓ (build concluído sem erros)
+- `git status` ✓ (working tree limpo, sem alterações pendentes)
+- Branch `main` sincronizada com `origin/main`
+
+### Nota
+O commit `4007177 - move usuarios para cadastros` já estava aplicado e sincronizado com o remoto. Nenhuma nova alteração pendente para commit/push.
