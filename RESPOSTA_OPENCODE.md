@@ -1,25 +1,28 @@
 # RESPOSTA - Execucao concluida
 
-## Alteracoes realizadas
+## Instrucao executada
 
-### src/App.tsx
-- Adicionado modulo `usuarios` ao tipo `ModuleKey`
-- Inserido `Usuarios` no menu **Cadastros** com icone User
-- Adicionado `usuarios: 'usuarios'` ao `entityByModule`
-- Criado bloco `moduleData.usuarios` com titulo, descricao e abas
-- Criado `moduleFields.usuarios` com campos: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha, Status, Observacoes
-- Removido `Usuarios` das abas de Configuracoes (agora: Emitente, Permissoes, Backup, Logs)
-- Removido registro USR-001 de Configuracoes
-- Ajustados indices das abas de Configuracoes (Permissoes: 1, Backup: 2, Logs: 3)
-- Adicionado `type="password"` para Senha e Confirmar senha
-- Adicionado validacao de confirmacao de senha no `saveCurrentRecord`
-- Alterado `buildPayload` para respeitar campo Status do formulario
+Arquivo: `tmptb9tucd2.md`
 
-### server/index.ts
-- Atualizado `buildUsuarioData` para ler campos pelos labels corretos (Nome completo, Login, Observacoes)
-- Adicionado `observacoes` ao retorno de `normalizeUsuarioRecord`
+### 1. src/App.tsx
 
-### Build
-- `npm run build` concluido com sucesso
-- Commit: `278398c - move usuarios para cadastros`
-- Push realizado para `main`
+- **Usuarios no menu Cadastros**: ja configurado como modulo proprio em `Cadastros` (grupo: `'Cadastros'`, icone: `User`)
+- **Configuracoes ajustada**: abas limitadas a `['Emitente', 'Permissoes', 'Backup', 'Logs']`
+- **Formulario de usuario**: criado com campos: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha (type=password), Status (select), Observacoes (textarea)
+- **Salvar em /api/usuarios**: entity `'usuarios'` mapeado em `entityByModule`
+
+### 2. server/index.ts
+
+- `buildUsuarioData` le os labels corretos (Nome completo, Login, Observacoes)
+- `normalizeUsuarioRecord` inclui `observacoes` no retorno
+- Rota `/api/usuarios` ativa tanto em memoria quanto PostgreSQL
+
+### 3. Build
+
+- `npm run build` concluido com sucesso (vite v8.0.16)
+- Commit: `4164eb7 - move usuarios para cadastros`
+- Ja enviado para `origin/main`
+
+## Status final
+
+Todas as alteracoes estao em dia, build verde, codigo commitado e sincronizado com o remoto.
