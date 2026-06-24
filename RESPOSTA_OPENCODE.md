@@ -1,26 +1,22 @@
-# RESPOSTA - Execução das Instruções
+# RESPOSTA OPENCODE - Movimentação de Usuários para Cadastros
 
 ## Status: CONCLUÍDO
 
-### Alterações realizadas no commit `4007177` (já aplicado)
+### O que foi verificado/executado:
 
-1. **src/App.tsx**:
-   - Movido `Usuarios` para o menu **Cadastros** como módulo próprio (grupo `'Cadastros'`, ícone `User`)
-   - Removido `Usuarios` das abas de `Configuracoes` (Configuracoes agora contém apenas: **Emitente**, **Permissoes**, **Backup**, **Logs**)
-   - Criado formulário próprio de usuário com os campos: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha, Status (select Ativo/Inativo) e Observacoes
-   - Salvamento via POST para `/api/usuarios`
+1. **Menu Cadastros** - `src/App.tsx:91` - `usuarios` já está no grupo `Cadastros` com label `Usuarios` e ícone `User`
 
-2. **server/index.ts**:
-   - Rota `/api/usuarios` já existente e funcional
-   - CRUD completo com suporte a hash de senha (scrypt)
-   - `buildUsuarioData` extrai campos: Nome completo, Login, E-mail, Telefone, Perfil, Senha, Status e Observacoes
+2. **Formulário de Usuário** - `src/App.tsx:458-468` - Campos implementados: Nome completo, Login, E-mail, Telefone, Perfil (select), Senha, Confirmar senha, Status (select Ativo/Inativo), Observacoes (textarea)
 
-3. **Build**: `npm run build` executado com sucesso (Vite build em 434ms)
+3. **Salvar em /api/usuarios** - `src/App.tsx:106-107` - `entityByModule` mapeia `usuarios` → `'usuarios'`, e `saveCurrentRecord()` POST para `${apiBaseUrl}/${activeEntity}`
 
-### Comandos executados
-- `npm run build` ✓ (build concluído sem erros)
-- `git status` ✓ (working tree limpo, sem alterações pendentes)
-- Branch `main` sincronizada com `origin/main`
+4. **Configuracoes** - `src/App.tsx:309-316` - Abas ajustadas para somente: Emitente, Permissoes, Backup, Logs
 
-### Nota
-O commit `4007177 - move usuarios para cadastros` já estava aplicado e sincronizado com o remoto. Nenhuma nova alteração pendente para commit/push.
+5. **Server (`server/index.ts`)** - Endpoint `/api/usuarios` já implementado:
+   - Rota GET/POST/PUT/DELETE via `/:entity` com suporte a `usuarios`
+   - `buildUsuarioData()` (linha 628) com hash de senha
+   - Suporte a PostgreSQL via `listPostgresRecords` (linha 697) e `createPostgresRecord` (linha 749)
+
+6. **Build** - `npm run build` executado com sucesso (417ms)
+
+7. **Git** - Commit `4007177 "move usuarios para cadastros"` já existe no histórico. Nenhuma alteração pendente.
