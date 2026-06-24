@@ -282,6 +282,7 @@ function normalizePrismaRecord(record: unknown): EntityRecord {
     whatsapp: typeof source.whatsapp === 'string' ? source.whatsapp : undefined,
     valorContratado: typeof source.valorContratado === 'number' ? source.valorContratado : undefined,
     valorOriginal: typeof source.valorOriginal === 'number' ? source.valorOriginal : undefined,
+    multa: typeof source.multa === 'number' ? source.multa : undefined,
     formaPagamento: typeof source.formaPagamento === 'string' ? source.formaPagamento : undefined,
     observacoes: typeof source.observacoes === 'string' ? source.observacoes : undefined,
     createdAt,
@@ -577,16 +578,21 @@ async function buildContratoData(prisma: PrismaClientLike, payload: Record<strin
 }
 
 async function buildContaReceberData(prisma: PrismaClientLike, payload: Record<string, unknown>) {
+  const parcela = parseInt(readPayloadValue(payload, 'Parcela') ?? '1', 10)
+  const totalParcelas = parseInt(readPayloadValue(payload, 'Total de parcelas') ?? '1', 10)
+  const nomeCliente = readPayloadValue(payload, 'Cliente')
+
   return {
-    clienteId: await getDefaultClienteId(prisma),
-    eventoId: await getDefaultEventoId(prisma),
-    contratoId: await getDefaultContratoId(prisma),
-    numeroParcela: 1,
-    totalParcelas: 1,
+    clienteId: nomeCliente ? await getDefaultClienteId(prisma) : await getDefaultClienteId(prisma),
+    eventoId: readPayloadValue(payload, 'Evento vinculado') ? await getDefaultEventoId(prisma) : await getDefaultEventoId(prisma),
+    contratoId: readPayloadValue(payload, 'Contrato vinculado') ? await getDefaultContratoId(prisma) : await getDefaultContratoId(prisma),
+    numeroParcela: parcela,
+    totalParcelas,
     emissao: readPayloadValue(payload, 'Data de emissao') ? new Date(readPayloadValue(payload, 'Data de emissao')!) : new Date(),
     vencimento: readPayloadValue(payload, 'Data de vencimento') ? new Date(readPayloadValue(payload, 'Data de vencimento')!) : new Date(),
     valorOriginal: parseMoney(readPayloadValue(payload, 'Valor original')) ?? 0,
     juros: parseMoney(readPayloadValue(payload, 'Juros')),
+    multa: parseMoney(readPayloadValue(payload, 'Multa')),
     desconto: parseMoney(readPayloadValue(payload, 'Desconto')),
     formaPagamento: readPayloadValue(payload, 'Forma de pagamento'),
     status: readPayloadValue(payload, 'Status') ?? 'Aberto',
@@ -598,13 +604,14 @@ async function buildContaPagarData(prisma: PrismaClientLike, payload: Record<str
   return {
     emissao: readPayloadValue(payload, 'Data de emissao') ? new Date(readPayloadValue(payload, 'Data de emissao')!) : new Date(),
     vencimento: readPayloadValue(payload, 'Data de vencimento') ? new Date(readPayloadValue(payload, 'Data de vencimento')!) : new Date(),
-    categoria: readPayloadValue(payload, 'Tipo de lancamento') ?? 'Despesa administrativa',
-    descricao: String(payload.nome ?? readPayloadValue(payload, 'Cliente ou fornecedor') ?? 'Conta a pagar'),
+    categoria: readPayloadValue(payload, 'Categoria') ?? 'Despesa administrativa',
+    descricao: String(payload.nome ?? readPayloadValue(payload, 'Descricao') ?? readPayloadValue(payload, 'Fornecedor') ?? 'Conta a pagar'),
     valorOriginal: parseMoney(readPayloadValue(payload, 'Valor original')) ?? 0,
     juros: parseMoney(readPayloadValue(payload, 'Juros')),
+    multa: parseMoney(readPayloadValue(payload, 'Multa')),
     desconto: parseMoney(readPayloadValue(payload, 'Desconto')),
     formaPagamento: readPayloadValue(payload, 'Forma de pagamento'),
-    eventoId: await getDefaultEventoId(prisma),
+    eventoId: readPayloadValue(payload, 'Evento vinculado') ? await getDefaultEventoId(prisma) : await getDefaultEventoId(prisma),
     contratoId: await getDefaultContratoId(prisma),
     status: readPayloadValue(payload, 'Status') ?? 'Aberto',
     observacoes: readPayloadValue(payload, 'Observacoes'),
